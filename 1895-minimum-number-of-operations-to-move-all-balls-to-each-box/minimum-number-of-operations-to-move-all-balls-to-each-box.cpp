@@ -2,7 +2,7 @@ class Solution {
 public:
     vector<int> minOperations(string boxes) {
 		int size = int(boxes.size());
-        vector< int > pref( size + 1 ) , suf( size + 1 );
+        	vector< int > pref( size + 1 ) , suf( size + 1 );
 
 
 		int ones = (boxes[0] == '1');
