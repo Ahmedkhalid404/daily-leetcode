@@ -6,7 +6,8 @@ private:
     struct TrieNode {
         unordered_map<char, TrieNode*> children;
         bool isEndOfWord;
-        TrieNode() : isEndOfWord(false) {}
+        int cnt;
+        TrieNode() : isEndOfWord(false), cnt(0) {}
     };
 
     TrieNode* root;
@@ -29,8 +30,22 @@ public:
                     current->children[ch] = new TrieNode();
                 }
                 current = current->children[ch];
+                current->cnt ++;
             }
             current->isEndOfWord = true;
+        }
+    }
+    
+    // don't check if word is exist or not
+    void remove(const string &word){
+        int size = int(word.size());
+        for (int i = 0; i < size; ++i) {
+            TrieNode *current = root;
+            for (int j = i; j < size; ++j) {
+                current = current->children[word[j]];
+                current->cnt --;
+            }
+            
         }
     }
 
@@ -41,6 +56,9 @@ public:
                 return false;
             }
             current = current->children[ch];
+            if( current->cnt < 1 ){
+                return false;
+            }
         }
         return true;
     }
@@ -58,15 +76,17 @@ public:
     vector<string> stringMatching(vector<string>& words) {
         SuffixTrie trie;
         
-        sort(words.begin(), words.end(), [&](auto a, auto b){
-           return a.size() > b.size(); 
-        });
-
-        vector< string > ans; ans.reserve(int(words.size()));
-
         for(auto &word : words){
-            if( trie.search(word) )
+            trie.insert(word);
+        }
+
+        vector< string > ans;ans.reserve(words.size());
+        for(auto &word : words){
+            trie.remove(word);
+
+            if( trie.search( word ) ){
                 ans.push_back(word);
+            }
 
             trie.insert(word);
         }
