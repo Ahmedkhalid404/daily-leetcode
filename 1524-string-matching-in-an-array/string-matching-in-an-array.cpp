@@ -1,95 +1,86 @@
 class Solution {
 private:
 
-class SuffixTrie {
+class suffix_automaton {
 private:
-    struct TrieNode {
-        unordered_map<char, TrieNode*> children;
-        bool isEndOfWord;
-        int cnt;
-        TrieNode() : isEndOfWord(false), cnt(0) {}
+    struct state {
+        map<int, int> nxt;
+        int link = -1;
+        int len{};
     };
+    int lst;
+    vector<state> tr;
+    char cnt = 'z' + 1;
 
-    TrieNode* root;
-
-public:
-    SuffixTrie() {
-        root = new TrieNode();
-    }
-
-    ~SuffixTrie() {
-        clear(root);
-    }
-
-    void insert(const string& word) {
-        for (int i = 0; i < word.size(); ++i) {
-            TrieNode* current = root;
-            for (int j = i; j < word.size(); ++j) {
-                char ch = word[j];
-                if (!current->children.count(ch)) {
-                    current->children[ch] = new TrieNode();
+    void add(int c) {
+        int curr = int(tr.size());
+        tr.emplace_back();
+        tr[curr].len = tr[lst].len + 1;
+        int p = lst;
+        while(~p && !tr[p].nxt.count(c)) {
+            tr[p].nxt[c] = curr;
+            p = tr[p].link;
+        }
+        if(p == -1) {
+            tr[curr].link = 0;
+        }
+        else {
+            int q = tr[p].nxt[c];
+            if(tr[p].len + 1 == tr[q].len) {
+                tr[curr].link = q;
+            }
+            else {
+                int clone = int(tr.size());
+                tr.emplace_back();
+                tr[clone] = tr[q];
+                tr[clone].len = tr[p].len + 1;
+                while(~p && tr[p].nxt[c] == q) {
+                    tr[p].nxt[c] = clone;
+                    p = tr[p].link;
                 }
-                current = current->children[ch];
-                current->cnt ++;
+                tr[curr].link = tr[q].link = clone;
             }
-            current->isEndOfWord = true;
         }
+        lst = curr;
     }
-    
-    // don't check if word is exist or not
-    void remove(const string &word){
-        int size = int(word.size());
-        for (int i = 0; i < size; ++i) {
-            TrieNode *current = root;
-            for (int j = i; j < size; ++j) {
-                current = current->children[word[j]];
-                current->cnt --;
-            }
-            
+public:
+    explicit suffix_automaton() : tr(1), lst(0) { }
+
+    void add(string &s){
+        for(auto &ch : s){
+            add(ch);
         }
+        add(cnt++);
     }
 
-    bool search(const string& substring) {
-        TrieNode* current = root;
-        for (char ch : substring) {
-            if (!current->children.count(ch)) {
-                return false;
-            }
-            current = current->children[ch];
-            if( current->cnt < 1 ){
-                return false;
-            }
+    bool found(string &s) {
+        int i = 0;
+        for(char c : s) {
+            if(!tr[i].nxt.count(c)) return false;
+            i = tr[i].nxt[c];
         }
         return true;
-    }
-
-private:
-    void clear(TrieNode* node) {
-        for (auto& pair : node->children) {
-            clear(pair.second);
-        }
-        delete node;
     }
 };
 
 public:
     vector<string> stringMatching(vector<string>& words) {
-        SuffixTrie trie;
+        suffix_automaton automaton;
         
-        for(auto &word : words){
-            trie.insert(word);
-        }
+        sort(words.begin(), words.end(), [&](auto &a, auto &b){
+            return a.size() > b.size();
+        });
 
         vector< string > ans;ans.reserve(words.size());
-        for(auto &word : words){
-            trie.remove(word);
 
-            if( trie.search( word ) ){
-                ans.push_back(word);
+        for(auto &it : words){
+            if(automaton.found(it)){
+                ans.push_back(it);
             }
-
-            trie.insert(word);
+            automaton.add(it);
         }
+
+        return ans;
 
         return ans;
         
