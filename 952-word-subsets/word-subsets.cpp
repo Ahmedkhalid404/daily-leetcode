@@ -1,7 +1,7 @@
 class Solution {
 public:
     vector<string> wordSubsets(vector<string> &words1, vector<string> &words2) {
-        unordered_map<char, int> mx_freq, freq;
+        map<char, int> mx_freq, freq;
         for(auto &word : words2){
             freq.clear();
             for(auto &ch : word){
