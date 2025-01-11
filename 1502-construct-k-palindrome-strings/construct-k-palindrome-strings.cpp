@@ -1,22 +1,16 @@
 class Solution {
 public:
-    bool canConstruct(string &s, int cnt) {
-        if( s.size() < cnt ){
-            return false;
-        }
-
-        array<int, int('z' - 'a' + 1)> freq{};
-
-        for(auto &ch : s){
-            freq[ch - 'a']++;
-        }
-
+    bool canConstruct(string &s, int k) {
+        if(k > s.size()) return false;
+        bitset< 26 > freq;
         int odd = 0;
-        for(auto it : freq){
-            odd += (it & 1);
-            if( odd > cnt ) return false;
+        for(char c : s){
+            freq[ c - 'a' ] = not freq[ c - 'a' ];
+            if( freq[ c - 'a' ] )
+                odd ++;
+            else
+                odd --;
         }
-
-        return true;
+        return odd <= k;
     }
 };
