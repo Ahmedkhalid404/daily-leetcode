@@ -1,6 +1,6 @@
 class Solution {
 public:
-    int minimumLength(string &s) {
+    static int minimumLength(string &s) {
         vector< int > freq( int('z' - 'a' + 1) );
         for(auto &ch : s){
             freq[ch - 'a'] ++;
