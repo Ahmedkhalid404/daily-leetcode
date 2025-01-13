@@ -1,10 +1,6 @@
 class Solution {
 public:
     int minimumLength(string &s) {
-        
-        if( s == "aaaaa" )
-            return 0;
-
         vector< int > cnt( int('z' - 'a' + 1), 0 );
         int ans = 0;
         for (int i = 0; i < s.size(); ++i) {
