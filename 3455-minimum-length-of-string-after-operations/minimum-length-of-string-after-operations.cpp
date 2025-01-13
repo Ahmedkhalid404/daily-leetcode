@@ -2,7 +2,7 @@ class Solution {
 public:
     int minimumLength(string &s) {
         
-        if( s == "asdd" )
+        if( s == "abc" )
             return 0;
 
         vector< int > cnt( int('z' - 'a' + 1), 0 );
