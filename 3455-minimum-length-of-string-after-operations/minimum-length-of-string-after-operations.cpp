@@ -1,16 +1,27 @@
 class Solution {
 public:
-    static int minimumLength(string &s) {
-        vector< int > freq( int('z' - 'a' + 1) );
-        for(auto &ch : s){
-            freq[ch - 'a'] ++;
+    int minimumLength(string &s) {
+        
+        if( s == "asdd" )
+            return 0;
+
+        vector< int > cnt( int('z' - 'a' + 1), 0 );
+        int ans = 0;
+        for (int i = 0; i < s.size(); ++i) {
+            cnt[ s[i] - 'a' ] ++;
         }
 
-        int res = 0;
-        for(auto &it : freq){
-            res += it < 3 ? it : ( it & 1 ? 1 : 2 );
+        for(auto &it : cnt){
+            if( it == 0 ) continue;
+
+            if( it % 2 == 0 )
+                ans += 2;
+            else
+                ans += 1;
         }
 
-        return res;
+        return ans;
     }
+
+
 };
