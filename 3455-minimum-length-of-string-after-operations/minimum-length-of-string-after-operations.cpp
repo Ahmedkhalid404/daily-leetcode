@@ -1,16 +1,16 @@
 class Solution {
 public:
     static int minimumLength(string &s) {
-        map<char, int> freq;
+        vector< int > freq( int('z' - 'a' + 1) );
         for(auto &ch : s){
-            freq[ch] ++;
+            freq[ch - 'a'] ++;
         }
 
         int res = 0;
-        for(auto &[k, v] : freq){
-            res += v < 3 ? v : ( v & 1 ? 1 : 2 );
+        for(auto &it : freq){
+            res += it < 3 ? it : ( it & 1 ? 1 : 2 );
         }
-        
+
         return res;
     }
 };
