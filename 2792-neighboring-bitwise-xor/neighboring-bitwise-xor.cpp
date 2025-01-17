@@ -2,9 +2,7 @@ class Solution {
 public:
     bool doesValidArrayExist(vector<int>& derived) {
         int n = int(derived.size());
-        if( n == 1 ){
-            return derived[0] == 0;
-        }
+
         vector<int> original_0(n), original_1(n);
         original_0[ 0 ] = 0;
         original_1[ 0 ] = 1;
