@@ -66,7 +66,7 @@ public:
 
             }
             
-            assert(false);
+            assert(false); // we should return before `pq` became empty
             return -1;
         };
         
