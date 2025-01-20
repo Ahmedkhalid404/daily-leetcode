@@ -5,8 +5,8 @@ public:
         int m = int(mat[0].size());
         int size = n * m;
 
-        map< int, pair< int, int > > mapping;
-        map< int , int > row, col;
+        unordered_map< int, pair< int, int > > mapping;
+        unordered_map< int , int > row, col;
         
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < m; ++j) {
@@ -20,8 +20,6 @@ public:
             row[ y ] --;
             col[ x ] --;
             
-            cout << y << ' ' << x << ' ' << row[y] << ' ' << col[ x ] << '\n';
-
             if( (abs( row[y] ) == m) or (abs( col[x] ) == n ) )
                 return i;
         }
