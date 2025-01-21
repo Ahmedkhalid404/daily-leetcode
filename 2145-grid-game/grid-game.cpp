@@ -11,7 +11,6 @@ public:
             if( i + 1 < size ) suf_top = suf_top - grid[0][i + 1];
             pref_down = pref_down + grid[1][i];
         }
-
         return mx;
 
     }
