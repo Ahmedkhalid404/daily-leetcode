@@ -62,11 +62,8 @@ public:
                 lvl ++;
             }
 
-        };
-
-        bfs();
-        
-        return res;
+        };        
+        return bfs(), res;
 
     }
 };
