@@ -21,13 +21,6 @@ public:
         };
 
         function<int(int,int)> dfs = [&](int i, int j){
-
-            if( (i < 0) or (i >= n) )
-                return 0;
-            if( (j < 0) or (j >= m) )
-                return 0;
-            
-
             int val = grid[i][j];
             grid[i][j] = 0; // vis
             
