@@ -1,44 +1,58 @@
 class Solution {
 private:
-    // Helper function to count the number of fishes in a connected component
-    int calculateFishes(vector<vector<int>>& grid,
-                        vector<vector<bool>>& visited, int row, int col) {
-        // Check boundary conditions, water cells, or already visited cells
-        if (row < 0 || row >= grid.size() || col < 0 || col >= grid[0].size() ||
-            grid[row][col] == 0 || visited[row][col]) {
-            return 0;
-        }
-
-        // Mark the current cell as visited
-        visited[row][col] = true;
-
-        // Accumulate the fish count from the current cell and its neighbors
-        return grid[row][col] + calculateFishes(grid, visited, row, col + 1) +
-               calculateFishes(grid, visited, row, col - 1) +
-               calculateFishes(grid, visited, row + 1, col) +
-               calculateFishes(grid, visited, row - 1, col);
-    }
-
+    vector<int> dx = { 1 , -1 , 0 , 0 },
+            dy = { 0 , 0 , 1 , -1 };
+    
 public:
     int findMaxFish(vector<vector<int>>& grid) {
-        int rows = grid.size(), cols = grid[0].size();
-        int maxFishCount = 0;
 
-        // A 2D vector to track visited cells
-        vector<vector<bool>> visited(rows, vector<bool>(cols, false));
+        int n = int(grid.size());
+        int m = int(grid.front().size());
 
-        // Iterate through all cells in the grid
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                // Start a DFS for unvisited land cells (fish available)
-                if (grid[row][col] > 0 && !visited[row][col]) {
-                    maxFishCount = max(
-                        maxFishCount, calculateFishes(grid, visited, row, col));
+        auto valid = [&](int i,int j,int k){
+            int new_i = i + dy[ k ];
+            int new_j = j + dx[ k ];
+
+            return (
+                    ( ( new_i < n ) && ( new_i > -1) ) &&
+                    ( ( new_j < m ) && ( new_j > -1 ) ) &&
+                    ( grid[ new_i ][ new_j ] != 0 )
+            );
+        };
+
+        function<int(int,int)> dfs = [&](int i, int j){
+
+            if( (i < 0) or (i >= n) )
+                return 0;
+            if( (j < 0) or (j >= m) )
+                return 0;
+            
+
+            int val = grid[i][j];
+            grid[i][j] = 0; // vis
+            
+            int sum = val;
+
+            for (int k = 0; k < 4; ++k) {
+                if(valid(i, j, k)){
+                    int new_i = i + dy[ k ];
+                    int new_j = j + dx[ k ];
+                    
+                    sum += dfs(new_i, new_j);
                 }
+            }
+            
+            return sum;
+        };
+
+        int mx = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if( grid[i][j] )
+                    mx = max(mx, dfs(i, j));
             }
         }
 
-        // Return the maximum fish count found
-        return maxFishCount;
+        return mx;
     }
 };
