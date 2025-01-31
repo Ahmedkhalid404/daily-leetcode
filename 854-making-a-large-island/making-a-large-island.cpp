@@ -2,7 +2,6 @@ class Solution {
 private:
     vector<int> dx = { 1 , -1 , 0 , 0 },
             dy = { 0 , 0 , 1 , -1 };
-
     class DSU{
     private:
         int size{};
@@ -149,7 +148,7 @@ public:
                             components.insert( dsu.getComponent(getIdx(idx->first, idx->second)) );
                         }
                     }
-                    int current1s = 1; // the bit i already flipped
+                    int current1s = 1; // the current bit already flipped
                     for(auto it : components){
                         current1s += dsu.getSize(it);
                     }
