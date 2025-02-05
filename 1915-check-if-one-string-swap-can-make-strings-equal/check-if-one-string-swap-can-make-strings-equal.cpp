@@ -6,10 +6,8 @@ public:
         int _xor = 0;
         for(int i = 0; i < s1.size(); i++){
             cnt += (s1[i] != s2[i]);
-            val = val + s1[i];
-            val = val - s2[i];
-            _xor ^= (s1[i] - 'a');
-            _xor ^= (s2[i] - 'a');
+            val += s1[i] - s2[i];
+            _xor ^= (s1[i] - 'a') ^ (s2[i] - 'a');
         }
         return cnt <= 2 and !val and !_xor;
     }
