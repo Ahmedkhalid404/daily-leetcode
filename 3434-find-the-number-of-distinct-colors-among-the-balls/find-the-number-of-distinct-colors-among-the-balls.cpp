@@ -7,7 +7,7 @@ static auto init = []() {
 class Solution {
 public:
     vector<int> queryResults(int limit, vector<vector<int>>& queries) {
-        map< int , int > freq, color;
+        unordered_map< int , int > freq, color;
         int res = 0;
 
         vector<int> ans;ans.reserve(queries.size());
