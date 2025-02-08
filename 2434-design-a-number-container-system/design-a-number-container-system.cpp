@@ -1,6 +1,31 @@
 class NumberContainers {
+private:
+    class FastMin {
+        private:
+            priority_queue<int, vector<int>, greater<int>> minHeap;
+            unordered_map<int, int> count;
+
+        public:
+            void insert(int num) {
+                count[num]++;
+                minHeap.push(num);
+            }
+
+            void erase(int num) {
+                if (count[num] > 0) {
+                    count[num]--;
+                }
+            }
+
+            int getMin() {
+                while (!minHeap.empty() and count[minHeap.top()] == 0) {
+                    minHeap.pop();
+                }
+                return minHeap.empty() ? -1 : minHeap.top();
+            }
+};
 public:
-    unordered_map< int , set< int > > rkm; // each rkm in which index ?
+    unordered_map< int , FastMin > rkm; // each rkm in which index ?
     unordered_map< int , int > idx; // each idx have which number ? 
     
     NumberContainers() {
@@ -17,11 +42,7 @@ public:
     }
     
     int find(int number) {
-        if( rkm[number].empty() ){
-            return -1;
-        }
-        
-        return *rkm[number].begin();
+        return rkm[number].getMin();
     }
 };
 /**
