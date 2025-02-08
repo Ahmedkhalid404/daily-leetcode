@@ -1,7 +1,7 @@
 class NumberContainers {
 public:
-    map< int , set< int > > rkm; // each rkm in which index ?
-    map< int , int > idx; // each idx have which number ? 
+    unordered_map< int , set< int > > rkm; // each rkm in which index ?
+    unordered_map< int , int > idx; // each idx have which number ? 
     
     NumberContainers() {
         
