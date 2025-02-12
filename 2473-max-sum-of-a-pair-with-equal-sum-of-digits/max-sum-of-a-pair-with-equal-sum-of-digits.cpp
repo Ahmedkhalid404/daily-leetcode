@@ -10,12 +10,12 @@ private:
     }
 public:
     int maximumSum(vector<int>& nums) {
-        unordered_map<int, int> freq;
+        vector freq(9 * 10, -1);
         int size = nums.size();
         int res = -1;
         for (int i = 0; i < size; i++) {
             
-            if( freq[sumOfDigits(nums[i])] ){
+            if( freq[sumOfDigits(nums[i])] != -1 ){
                 res = max(res, nums[i] + freq[sumOfDigits(nums[i])]);
             }
             freq[sumOfDigits(nums[i])] = max(freq[sumOfDigits(nums[i])], nums[i]);
