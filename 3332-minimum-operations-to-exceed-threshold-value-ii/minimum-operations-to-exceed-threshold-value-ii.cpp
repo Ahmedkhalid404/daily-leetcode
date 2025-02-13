@@ -1,14 +1,12 @@
 class Solution {
 public:
     int minOperations(vector<int>& nums, int k) {
-        multiset<int64_t> st;
-        for(auto &it : nums) st.insert(it);
-
+        priority_queue<int64_t, vector<int64_t>, greater<int64_t>> pq(begin(nums), end(nums));
         int res = 0;
-        while( (st.size() > 1) and (*st.begin() < k) ){
-            int64_t x = *st.begin(); st.erase(st.begin());
-            int64_t y = *st.begin(); st.erase(st.begin());
-            st.insert( x * 2LL + y );
+        while( pq.top() < k ){
+            int64_t x = pq.top(); pq.pop();
+            int64_t y = pq.top(); pq.pop();
+            pq.push( x * 2LL + y );
             res++;
         }
         
