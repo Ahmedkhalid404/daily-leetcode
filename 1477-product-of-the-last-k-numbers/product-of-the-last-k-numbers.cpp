@@ -7,7 +7,7 @@ private:
     // as if there were no zeros, and using the prefix that counts the number of zeros,
     // we can determine if there is at least one zero in the required range.
     // If so, the result for that range will be zero.
-    vector<__int128> pref_zeros, pref_mul;
+    vector<int> pref_zeros, pref_mul;
     const int MAX_N = 4 * 1e4;
 public:
     ProductOfNumbers() {
