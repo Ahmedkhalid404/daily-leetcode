@@ -1,26 +1,25 @@
 class Solution {
 public:
     int numTilePossibilities(string tiles) {
-        map<char, int> freq;
-        for(auto it : tiles) freq[it] ++;
-        string curr = ""s;
-        set<string> ans;
+        int freq[26];
+        fill(freq, freq + 26 , 0);
+
+        for(auto it : tiles) freq[it - 'A'] ++;
+        int cnt = 0;
         function<void(int)> rec = [&](int idx){
-            if(!curr.empty()) ans.insert(curr);
             if(idx >= tiles.size())
                 return;
             
-            for(auto &it : freq){
-                if(it.second > 0){
-                    curr.push_back(it.first);
-                    it.second --;
+            for(int i = 0; i < 26; i ++){
+                if( freq[i] > 0 ){
+                    cnt ++;
+                    freq[i] --;
                     rec(idx + 1);
-                    curr.pop_back();
-                    it.second ++;
+                    freq[i] ++;
                 }
             }
         };
         rec(0);
-        return ans.size();
+        return cnt;
     }
 };
