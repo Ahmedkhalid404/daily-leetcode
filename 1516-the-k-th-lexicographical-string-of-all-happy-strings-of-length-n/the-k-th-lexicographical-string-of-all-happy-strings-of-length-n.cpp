@@ -1,8 +1,6 @@
-class Solution {
-private:
-    int const MAX_N = 10;
-    unordered_map< int , vector<string> > happyStrings;
-    char c = [&](){
+int const MAX_N = 10;
+    map< int , vector<string> > happyStrings;
+    char c = [](){
 
         function<void(string&&)> generateHappyStrings = [&](string &&curr){
 
@@ -23,7 +21,8 @@ private:
         generateHappyStrings(string(""));
         return char('_');
     }();
-public:
+class Solution {
+    public:
     string getHappyString(int n, int k) {
         if( k > happyStrings[n].size() )
             return ""s;
