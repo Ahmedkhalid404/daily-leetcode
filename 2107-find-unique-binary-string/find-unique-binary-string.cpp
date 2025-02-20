@@ -2,26 +2,42 @@ class Solution {
 public:
     string findDifferentBinaryString(vector<string>& nums) {
 
-    unordered_set<int> st;
-
-    for(auto it : nums){
-        bitset<20> bt(it);
-        st.insert(bt.to_ullong());
-    }
-    int i = 0;
-    while( -404 ){
-        if(!st.contains(i)){
-            bitset<20> bt(i);
-            string res = ""s;
-            for(int j = 0; j < nums.size(); j ++){
-                res.push_back(char(bt[j] + '0'));
+        int n = int(nums.size());
+        unordered_set<string> st;
+        int freq[ n ][2];
+        for(int i = 0; i < n ; i ++){
+            st.insert(nums[i]);
+            for(int j = 0; j < 2; j ++){
+                freq[i][j] = 0;
             }
-            reverse(res.begin(), res.end());
-            return res;
         }
-        i++;
+
+        for(int i = 0; i < n; i ++){
+            
+            for(int j = 0; j < n; j ++){
+                freq[ j ][ nums[i][j] - '0' ] ++;
+            }
+
+        }
+
+        string res = ""s;
+        for(int i = 0; i < n; i ++){
+            if( freq[i][0] < freq[i][1] )
+                res.push_back('0');
+            else
+                res.push_back('1');
+        }
+
+        for(int i = 0; i < n; i++){
+            if(!st.contains(res)){
+                return res;
+            }
+
+            if(res[i] == '0') res[i] = '1';
+            else res[i] = '0';
+        }
+
+        return ""s;
+    
     }
-    assert(false);
-    return ""s;
-}
 };
