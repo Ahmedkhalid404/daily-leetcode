@@ -11,11 +11,14 @@
  */
 class FindElements {
 private:
-    bitset<int(1e9 + 4)> isExists; 
+    bitset<int(1e6 + 4)> isExists; 
 public:
     FindElements(TreeNode* root) {
         
         function<void(TreeNode*, int val)> dfs = [&](TreeNode *node, int val){
+            if(val > int(1e6))
+                return;
+
             isExists[val] = true;
 
             if( node->left != nullptr )
