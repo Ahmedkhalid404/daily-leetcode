@@ -20,7 +20,6 @@ class Solution {
     
             vector<pair<int,int>> idx_longest_sub_seq;
             idx_longest_sub_seq.reserve(min(n,m));
-            string longest_sub_seq = ""s;
     
             int i = 0, j = 0;
             while( dp[i][j] ){
@@ -31,7 +30,6 @@ class Solution {
                 });
                 if( mx == dp[i + 1][j + 1] ) {
                     if(s[i] == t[j]){ 
-                        longest_sub_seq.push_back(s[i]);
                         idx_longest_sub_seq.push_back({i,j});
                     }
                     i ++, j ++;
@@ -44,7 +42,6 @@ class Solution {
             string res = ""s;
             for(int l = 0; l < idx_longest_sub_seq.size(); l++){
 
-                // cout << idx_longest_sub_seq[l].first << ' ' << idx_longest_sub_seq[l].second << ' ' << i << ' ' << j << '\n';
                 while(i < idx_longest_sub_seq[l].first){
                     res.push_back(s[i ++]);
                 }
