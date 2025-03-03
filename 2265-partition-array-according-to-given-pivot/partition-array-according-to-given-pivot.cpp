@@ -1,16 +1,19 @@
 class Solution {
 public:
     vector<int> pivotArray(vector<int> nums, int pivot) {
-        stable_sort(nums.begin(), nums.end(),[&pivot](auto &a, auto &b) {
+        vector<int> res;
+        int cntPivot = 0;
+        queue<int> greaterThanPivot;
 
-            if ( a == b )
-                return false;
+        for (auto &it : nums) {
+            if ( it < pivot ) res.push_back(it);
+            else if ( it == pivot ) cntPivot ++;
+            else greaterThanPivot.push(it);
+        }
 
-            if ( (a < pivot and b < pivot) or (a > pivot and b > pivot) )
-                return false;
+        while ( cntPivot --> 0 ) res.push_back(pivot);
+        while ( !greaterThanPivot.empty() ) res.push_back(greaterThanPivot.front()), greaterThanPivot.pop();
 
-            return a < b;
-        });
-        return nums;
+        return res;
     }
 };
