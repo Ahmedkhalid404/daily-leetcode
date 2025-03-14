@@ -1,24 +1,18 @@
 class Solution {
 public:
     int maximumCandies(const vector<int>& candies,const long long &k) {
-
-        int n = static_cast<int>(candies.size());
-
-        int64_t st = 0;
-        int64_t ed = 1e12;
-        int64_t md, ans = -1;
+        int64_t st = 1;
+        int64_t ed = accumulate(candies.begin(), candies.end(), 0LL);
+        int64_t md, ans = 0;
 
         auto valid = [&]() {
-            if( !md ) return true;
             int64_t can = 0;
             for (auto &candi : candies) {
                 can += candi / md;
 
-                //cout << can << ' ' << md << '\n';
-
                 if ( can >= k )
                     return true;
-                
+
             }
             return false;
         };
@@ -37,7 +31,7 @@ public:
 
         }
 
-        return ans;
+        return static_cast<int>(ans);
 
     }
 };
