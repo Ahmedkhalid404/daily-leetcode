@@ -4,10 +4,9 @@ public:
 
         const int n = static_cast<int>(nums.size());
 
-        auto [mn, mx] = std::minmax_element(nums.begin(), nums.end());
 
-        int st = *mn;
-        int ed = *mx;
+        auto [st, ed] = [](auto p){return make_pair(*p.first, *p.second);}(minmax_element(nums.begin(), nums.end()));
+
         int md, ans = -1;
 
         auto valid = [&]() {
