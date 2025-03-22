@@ -1,74 +1,124 @@
 class Solution {
-public:
-    vector<int> parent;
-    vector<int> depth;
+private:
+    class DSU {
+    private:
+        vector<int> parent, sz;
+        int size;
 
-    vector<int> minimumCost(int n, vector<vector<int>>& edges,
-                            vector<vector<int>>& queries) {
-        // Initialize the parent array with -1 as initially each node belongs to
-        // its own component
-        parent.resize(n, -1);
-        depth.resize(n, 0);
-
-        // All values are initially set to the number with only 1s in its binary
-        // representation
-        vector<unsigned int> componentCost(n, -1);
-
-        // Construct the connected components of the graph
-        for (auto& edge : edges) {
-            Union(edge[0], edge[1]);
+        int getRoot(const int& x) {
+            return parent[x] = (parent[x] == x ? x : getRoot(parent[x]));
         }
 
-        // Calculate the cost of each component by performing bitwise AND of all
-        // edge weights in it
-        for (auto& edge : edges) {
-            int root = find(edge[0]);
-            componentCost[root] &= edge[2];
+        bool marge(int a, int b) {
+
+            int rootA = getRoot(a);
+            int rootB = getRoot(b);
+
+            if (rootA == rootB)
+                return false;
+
+            if (sz[rootA] < sz[rootB])
+                swap(rootA, rootB);
+
+            parent[rootB] = rootA;
+            sz[rootA] += sz[rootB];
+
+            return true;
         }
 
-        vector<int> answer;
-        for (auto& query : queries) {
-            int start = query[0];
-            int end = query[1];
-
-            // If the two nodes are in different connected components, return -1
-            if (find(start) != find(end)) {
-                answer.push_back(-1);
-            } else {
-                // Find the root of the edge's component
-                int root = find(start);
-                // Return the precomputed cost of the component
-                answer.push_back(componentCost[root]);
+        void init() {
+            parent.resize(size);
+            sz.resize(size);
+            for (int i = 0; i < size; i++) {
+                parent[i] = i;
+                sz[i] = 1;
             }
         }
-        return answer;
-    }
 
-private:
-    // Find function to return the root (representative) of a node's component
-    int find(int node) {
-        // If the node is its own parent, it is the root of the component
-        if (parent[node] == -1) return node;
-        // Otherwise, recursively find the root and apply path compression
-        return parent[node] = find(parent[node]);
-    }
+    public:
+        explicit DSU(int n) {
+            size = n + 5;
+            init();
+        }
 
-    // Union function to merge the components of two nodes
-    void Union(int node1, int node2) {
-        int root1 = find(node1);
-        int root2 = find(node2);
+        bool connect(int a, int b) { return marge(a, b); }
 
-        // If the two nodes are already in the same component, do nothing
-        if (root1 == root2) return;
+        bool isConnected(int a, int b) { return getRoot(a) == getRoot(b); }
 
-        // Union by depth: ensure the root of the deeper tree becomes the parent
-        if (depth[root1] < depth[root2]) swap(root1, root2);
+        int getParent(int x) { return getRoot(x); }
+    };
 
-        // Merge the two components by making root1 the parent of root2
-        parent[root2] = root1;
+public:
+    vector<int> minimumCost(int n, vector<vector<int>>& edges,
+                            vector<vector<int>>& queries) {
 
-        // If both components had the same depth, increase the depth of the new
-        // root
-        if (depth[root1] == depth[root2]) depth[root1]++;
+        DSU dsu(n);
+        vector<vector<pair<int, int>>> graph(n + 1);
+
+        map<pair<int, int>, pair<int, int>> mapping;
+
+        for (auto& it : edges) {
+            int u = it[0];
+            int v = it[1];
+            int c = it[2];
+
+            if ( u > v )
+                swap(u, v);
+
+            if ( mapping.contains({u, v}) ) {
+                auto [i, j] = mapping[{u,v}];
+                graph[u][i].second &= c;
+                graph[v][j].second &= c;
+            }
+            else {
+                graph[u].emplace_back(v, c);
+                graph[v].emplace_back(u, c);
+
+                mapping[ {u, v} ] = {graph[u].size() - 1, graph[v].size() - 1};
+            }
+
+        }
+
+        bitset<int(1e5 + 5)> vis;
+        map<int, unsigned int> res;
+        auto dfs = [&](auto&& dfs, int node, int root) -> int {
+            vis[node] = true;
+
+            dsu.connect(root, node);
+
+            int ret = INT_MAX;
+            for (auto it : graph[node]) {
+                if (!vis[it.first]) {
+                    ret &= it.second;
+                    ret &= dfs(dfs, it.first, root);
+                }
+                else{
+                    ret &= it.second;
+                }
+            }
+
+            cout << node << ' ' << ret << '\n';
+
+            return ret;
+        };
+
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                int x = int(dfs(dfs, i, i));
+                res[dsu.getParent(i)] = x;
+            }
+        }
+
+        vector<int> ans;
+        ans.reserve(queries.size());
+        for (auto it : queries) {
+            if (dsu.isConnected(it[0], it[1])) {
+                ans.push_back(res[dsu.getParent(it[0])]);
+            } else {
+                ans.push_back(-1);
+            }
+        }
+
+        return ans;
     }
 };
