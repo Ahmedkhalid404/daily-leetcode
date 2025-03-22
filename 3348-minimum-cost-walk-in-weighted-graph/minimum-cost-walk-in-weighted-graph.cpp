@@ -97,7 +97,6 @@ public:
                 }
             }
 
-            cout << node << ' ' << ret << '\n';
 
             return ret;
         };
