@@ -2,26 +2,30 @@ class Solution {
 private:
     class DSU {
     private:
-        vector<int> parent, sz;
+        vector<int> parent, weight, sz;
         int size;
 
         int getRoot(const int& x) {
             return parent[x] = (parent[x] == x ? x : getRoot(parent[x]));
         }
 
-        bool marge(int a, int b) {
+        bool marge(int a, int b, int c) {
 
             int rootA = getRoot(a);
             int rootB = getRoot(b);
 
-            if (rootA == rootB)
+            if (rootA == rootB) {
+                weight[rootA] &= c;
                 return false;
+            }
 
             if (sz[rootA] < sz[rootB])
                 swap(rootA, rootB);
 
             parent[rootB] = rootA;
             sz[rootA] += sz[rootB];
+            weight[rootA] &= weight[rootB];
+            weight[rootA] &= c;
 
             return true;
         }
@@ -29,9 +33,11 @@ private:
         void init() {
             parent.resize(size);
             sz.resize(size);
+            weight.resize(size);
             for (int i = 0; i < size; i++) {
                 parent[i] = i;
                 sz[i] = 1;
+                weight[i] = INT_MAX;
             }
         }
 
@@ -41,11 +47,20 @@ private:
             init();
         }
 
-        bool connect(int a, int b) { return marge(a, b); }
+        bool connect(int a, int b, int c) { return marge(a, b, c); }
 
         bool isConnected(int a, int b) { return getRoot(a) == getRoot(b); }
 
         int getParent(int x) { return getRoot(x); }
+
+        int mnCost(int a, int b) {
+            int rootA = getRoot(a);
+            int rootB = getRoot(b);
+            if ( rootA != rootB )
+                return -1;
+
+            return weight[rootA];
+        }
     };
 
 public:
@@ -53,69 +68,20 @@ public:
                             vector<vector<int>>& queries) {
 
         DSU dsu(n);
-        vector<vector<pair<int, int>>> graph(n + 1);
 
-        map<pair<int, int>, pair<int, int>> mapping;
 
         for (auto& it : edges) {
             int u = it[0];
             int v = it[1];
             int c = it[2];
 
-            if ( u > v )
-                swap(u, v);
-
-            if ( mapping.contains({u, v}) ) {
-                auto [i, j] = mapping[{u,v}];
-                graph[u][i].second &= c;
-                graph[v][j].second &= c;
-            }
-            else {
-                graph[u].emplace_back(v, c);
-                graph[v].emplace_back(u, c);
-
-                mapping[ {u, v} ] = {graph[u].size() - 1, graph[v].size() - 1};
-            }
-
-        }
-
-        bitset<int(1e5 + 5)> vis;
-        map<int, unsigned int> res;
-        auto dfs = [&](auto&& dfs, int node, int root) -> int {
-            vis[node] = true;
-
-            dsu.connect(root, node);
-
-            int ret = INT_MAX;
-            for (auto it : graph[node]) {
-                if (!vis[it.first]) {
-                    ret &= it.second;
-                    ret &= dfs(dfs, it.first, root);
-                }
-                else{
-                    ret &= it.second;
-                }
-            }
-
-
-            return ret;
-        };
-
-        for (int i = 0; i < n; i++) {
-            if (!vis[i]) {
-                int x = int(dfs(dfs, i, i));
-                res[dsu.getParent(i)] = x;
-            }
+            dsu.connect(u, v, c);
         }
 
         vector<int> ans;
         ans.reserve(queries.size());
         for (auto it : queries) {
-            if (dsu.isConnected(it[0], it[1])) {
-                ans.push_back(res[dsu.getParent(it[0])]);
-            } else {
-                ans.push_back(-1);
-            }
+            ans.push_back(dsu.mnCost(it[0], it[1]));
         }
 
         return ans;
