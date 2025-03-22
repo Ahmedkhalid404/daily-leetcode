@@ -19,7 +19,7 @@ public:
         int edges = 0;
         int ans = 0;
 
-        auto dfs = [&](auto &&dfs, int node) -> void{
+        auto dfs = [&](this auto &&dfs, int node) -> void{
 
             vis[node] = true;
             nodes ++;
@@ -29,7 +29,7 @@ public:
             for (auto it : graph[node]) {
 
                 if ( !vis[it] ) {
-                    dfs(dfs, it);
+                    dfs(it);
                 }
 
             }
@@ -38,7 +38,7 @@ public:
 
         for (int i = 0; i < n; i++) {
             if ( !vis[i] ) {
-                dfs(dfs, i);
+                dfs(i);
                 ans += ( nodes * (nodes - 1LL) ) == edges;
                 nodes = 0;
                 edges = 0;
