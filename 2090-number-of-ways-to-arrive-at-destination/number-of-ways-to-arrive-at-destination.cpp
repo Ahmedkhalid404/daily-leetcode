@@ -1,56 +1,38 @@
 class Solution {
+    const static int MOD = 1e9 + 7;
+    int64_t add(const int64_t &a, const int64_t &b) {
+        return ( (a % MOD) + (b % MOD) ) % MOD;
+    }
 public:
     int countPaths(int n, vector<vector<int>>& roads) {
-        const int MOD = 1e9 + 7;
-
-        // Build adjacency list
         vector<vector<pair<int, int>>> graph(n);
-        for (auto& road : roads) {
-            int startNode = road[0], endNode = road[1], travelTime = road[2];
-            graph[startNode].emplace_back(endNode, travelTime);
-            graph[endNode].emplace_back(startNode, travelTime);
+        for (auto& it : roads) {
+            graph[it[0]].emplace_back(it[1], it[2]);
+            graph[it[1]].emplace_back(it[0], it[2]);
         }
 
-        // Min-Heap (priority queue) for Dijkstra
-        priority_queue<pair<long long, int>, vector<pair<long long, int>>,
-                       greater<>>
-            minHeap;
+        vector<int64_t> dist(n, LLONG_MAX), ways(n, 0);
+        priority_queue<pair<int64_t, int>, vector<pair<int64_t, int>>, greater<>> pq;
 
-        // Store shortest time to each node
-        vector<long long> shortestTime(n, LLONG_MAX);
-        // Number of ways to reach each node in shortest time
-        vector<int> pathCount(n, 0);
+        dist[0] = 0;
+        ways[0] = 1;
+        pq.emplace(0, 0);
 
-        shortestTime[0] = 0;  // Distance to source is 0
-        pathCount[0] = 1;     // 1 way to reach node 0
+        while (!pq.empty()) {
+            auto [d, u] = pq.top(); pq.pop();
+            if (d > dist[u]) continue;
 
-        minHeap.emplace(0, 0);  // {time, node}
-
-        while (!minHeap.empty()) {
-            long long currTime = minHeap.top().first;  // Current shortest time
-            int currNode = minHeap.top().second;
-            minHeap.pop();
-
-            // Skip outdated distances
-            if (currTime > shortestTime[currNode]) continue;
-
-            for (auto& [neighborNode, roadTime] : graph[currNode]) {
-                // Found a new shortest path → Update shortest time and reset
-                // path count
-                if (currTime + roadTime < shortestTime[neighborNode]) {
-                    shortestTime[neighborNode] = currTime + roadTime;
-                    pathCount[neighborNode] = pathCount[currNode];
-                    minHeap.emplace(shortestTime[neighborNode], neighborNode);
-                }
-                // Found another way with the same shortest time → Add to path
-                // count
-                else if (currTime + roadTime == shortestTime[neighborNode]) {
-                    pathCount[neighborNode] =
-                        (pathCount[neighborNode] + pathCount[currNode]) % MOD;
+            for (auto& [v, w] : graph[u]) {
+                if (dist[v] > dist[u] + w) {
+                    dist[v] = dist[u] + w;
+                    pq.emplace(dist[v], v);
+                    ways[v] = ways[u];
+                }else if ( dist[v] == dist[u] + w ) {
+                    ways[v] = add(ways[v], ways[u]);
                 }
             }
         }
 
-        return pathCount[n - 1];
+        return ways[n - 1];
     }
 };
