@@ -36,12 +36,6 @@ public:
             return ans;
         };
 
-        return min({
-            getOp(sorted_nums[md]),
-            md - 1 > -1 ? getOp(sorted_nums[md - 1]) : INT_MAX,
-            md + 1 < sorted_nums.size() ? getOp(sorted_nums[md + 1]) : INT_MAX
-        });
-
-
+        return getOp(sorted_nums[md]) ;
     }
 };
