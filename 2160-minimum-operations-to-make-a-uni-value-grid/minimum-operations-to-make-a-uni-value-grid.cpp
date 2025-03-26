@@ -21,21 +21,18 @@ public:
 
         ranges::sort(sorted_nums);
 
-        int md = n * m / 2;
+        int rkm = sorted_nums[n * m / 2];
 
-        auto getOp = [&](int num) {
-            int64_t ans = 0;
-            for (int i = 0; i < n; i++) {
+        int64_t ans = 0;
+        for (int i = 0; i < n; i++) {
 
-                for (int j = 0; j < m; j++) {
-                    int diff = abs(num - grid[i][j]);
-                    ans = ans + (diff / x) + (diff % x != 0);
-                }
-
+            for (int j = 0; j < m; j++) {
+                int diff = abs(rkm - grid[i][j]);
+                ans = ans + (diff / x) + (diff % x != 0);
             }
-            return ans;
-        };
 
-        return getOp(sorted_nums[md]) ;
+        }
+
+        return ans ;
     }
 };
