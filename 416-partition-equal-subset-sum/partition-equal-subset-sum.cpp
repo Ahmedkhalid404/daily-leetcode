@@ -17,16 +17,16 @@ public:
 
         */
 
-        vector<vector<int>> dp(n + 1, vector<int>(100 * 200 + 5));
+        vector<vector<int>> dp(2, vector<int>(100 * 200 + 5));
 
-        dp[n - 1][0] = dp[n - 1][ nums[n - 1] ] = true;
+        dp[(n - 1) & 1][0] = dp[(n - 1) & 1][ nums[n - 1] ] = true;
 
         for(int i = n - 2; ~i ; i--){
-            dp[i][0] = true;
+            dp[i & 1][0] = true;
             for(int j = 1; j <= sum / 2; j++){
-                dp[i][j] = dp[i + 1][j]; // leave
+                dp[i & 1][j] = dp[(i + 1) & 1][j]; // leave
                 if(j >= nums[i]){
-                    dp[i][j] |= dp[i + 1][j - nums[i]]; // take 
+                    dp[i & 1][j] |= dp[(i + 1) & 1][j - nums[i]]; // take 
                 }
             }
         }
