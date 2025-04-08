@@ -23,7 +23,7 @@ public:
 
         for(int i = n - 2; ~i ; i--){
             dp[i][0] = true;
-            for(int j = 1; j <= 100 * 200; j++){
+            for(int j = 1; j <= sum / 2; j++){
                 dp[i][j] = dp[i + 1][j]; // leave
                 if(j >= nums[i]){
                     dp[i][j] |= dp[i + 1][j - nums[i]]; // take 
