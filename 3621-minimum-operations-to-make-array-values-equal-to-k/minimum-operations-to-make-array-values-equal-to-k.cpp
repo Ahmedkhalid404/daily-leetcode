@@ -1,14 +1,17 @@
 class Solution {
 public:
     int minOperations(vector<int>& nums, int k) {
-        unordered_set<int> st;
-        for (int x : nums) {
-            if (x < k) {
-                return -1;
-            } else if (x > k) {
-                st.insert(x);
-            }
+        sort(nums.begin(), nums.end());
+
+        if( nums.front() < k ) return -1;
+
+        int ans = 0;
+        int idx = nums.size() - 2;
+        while( idx > -1 ){
+            if(nums[idx] != nums[idx + 1])
+                ans ++;
+            idx --;
         }
-        return st.size();
+        return ans + (nums.front() != k);
     }
 };
