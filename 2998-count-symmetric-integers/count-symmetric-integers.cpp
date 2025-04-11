@@ -1,4 +1,3 @@
-class Solution {
 vector<int> ans = [](){
     vector<int> res;res.reserve(10000);
     int ans = 0;
@@ -20,6 +19,8 @@ vector<int> ans = [](){
     
     return res;
 }();
+class Solution {
+
 public:
     int countSymmetricIntegers(int low, int high) {
         return ans[high] - ans[low - 1];
