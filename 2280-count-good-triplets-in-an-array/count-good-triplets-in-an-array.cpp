@@ -1,49 +1,66 @@
-class FenwickTree {
-private:
-    vector<int> tree;
+template <class T = long long> struct BIT { // 1-based
+    vector<T> tree;
+    explicit BIT(int size = 1e6) { tree.resize(size + 1); }
 
-public:
-    FenwickTree(int size) : tree(size + 1, 0) {}
-
-    void update(int index, int delta) {
-        index++;
-        while (index < tree.size()) {
-            tree[index] += delta;
-            index += index & -index;
+    void update(int i, T val) {
+        assert(i > 0);
+        while (i < tree.size()) {
+            tree[i] += val;
+            i += (i & -i);
         }
     }
 
-    int query(int index) {
-        index++;
-        int res = 0;
-        while (index > 0) {
-            res += tree[index];
-            index -= index & -index;
+    T query(int i) {
+        T sum = 0;
+        while (i > 0) {
+            sum += tree[i];
+            i -= (i & -i);
         }
-        return res;
+        return sum;
     }
+
+    T rangeQuery(int l, int r) { return query(r) - query(l - 1); }
 };
 
 class Solution {
 public:
-    long long goodTriplets(vector<int>& nums1, vector<int>& nums2) {
-        int n = nums1.size();
-        vector<int> pos2(n), reversedIndexMapping(n);
+    long long goodTriplets(vector<int>& a, vector<int>& b) {
+
+        int n = a.size();
+
+        BIT ds(n + 5);
+
+        vector<int> idx_a(n);
         for (int i = 0; i < n; i++) {
-            pos2[nums2[i]] = i;
+            idx_a[a[i]] = i;
         }
+
+        vector<int64_t> ans_before(n), ans_after(n);
+
+        ds.update(idx_a[b[0]] + 1, 1);
+
+        for (int i = 1; i < n; i++) {
+            ans_before[i] = ds.rangeQuery(1, idx_a[b[i]] + 1);
+
+            ds.update(idx_a[b[i]] + 1, 1);
+        }
+
+        BIT ds_back(n + 5);
+
+        ds_back.update(idx_a[b[n - 1]] + 1, 1);
+
+        for (int i = n - 2; ~i; i--) {
+            ans_after[i] = ds_back.rangeQuery(idx_a[b[i]] + 1, n);
+
+            ds_back.update(idx_a[b[i]] + 1, 1);
+        }
+
+        int64_t ans = 0;
+
         for (int i = 0; i < n; i++) {
-            reversedIndexMapping[pos2[nums1[i]]] = i;
+            ans += ans_before[i] * ans_after[i];
         }
-        FenwickTree tree(n);
-        long long res = 0;
-        for (int value = 0; value < n; value++) {
-            int pos = reversedIndexMapping[value];
-            int left = tree.query(pos);
-            tree.update(pos, 1);
-            int right = (n - 1 - pos) - (value - left);
-            res += (long long)left * right;
-        }
-        return res;
+
+        return ans;
     }
 };
