@@ -9,7 +9,7 @@ public:
         int cnt = 0;
         int64_t ans = 0;
 
-        map<int, int> freq;
+        unordered_map<int, int> freq;
 
         while ((r + 1) < n) {
             r++;
