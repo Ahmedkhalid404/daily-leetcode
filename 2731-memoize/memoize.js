@@ -8,12 +8,13 @@ function memoize(fn) {
     let memo = new Map();
     
     return function(...args) {
-        let curr = memo[args];
-        if(typeof curr === typeof undefined){
-            memo[args] = fn(...args);
+        const key = JSON.stringify(args);
+       
+        if(!memo.has(key)){
+            memo.set(key, fn(...args));
         }
 
-        return memo[args];
+        return memo.get(key);
     }
 }
 
