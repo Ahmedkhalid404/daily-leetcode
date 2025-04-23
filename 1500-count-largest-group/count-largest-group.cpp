@@ -1,7 +1,7 @@
 class Solution {
 public:
     int countLargestGroup(int n) {
-        unordered_map<int, int> freq;
+        vector<int> freq(3 * 9 * 2);
         int mx = 0,cnt = 0;
         for(int i = 1; i <= n; i++){
             int temp = i;
