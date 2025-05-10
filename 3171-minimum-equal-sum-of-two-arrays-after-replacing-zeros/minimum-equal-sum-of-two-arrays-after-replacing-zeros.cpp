@@ -19,7 +19,11 @@ public:
         if ( (sum1 + zeros1) == (sum2 + zeros2) )
             return sum1 + zeros1;
 
-        if ( (zeros1 == 0 and zeros2 == 0) or (zeros1 == 0 and (sum2 + zeros2) > sum1) or (zeros2 == 0 and (sum1 + zeros1) > sum2) ) {
+        if ( 
+                (zeros1 == 0 and zeros2 == 0) or
+                (zeros1 == 0 and (sum2 + zeros2) > sum1) or
+                (zeros2 == 0 and (sum1 + zeros1) > sum2) 
+            ) {
             return -1;
         }
 
