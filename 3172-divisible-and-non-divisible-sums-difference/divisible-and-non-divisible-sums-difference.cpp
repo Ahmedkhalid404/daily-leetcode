@@ -17,8 +17,9 @@ public:
                 ed = md - 1;
             }
         }
-
-        return ( sum_from_1_to_n(n) - ( sum_from_1_to_n(ans) * m ) ) - ( sum_from_1_to_n(ans) * m );
+        int div = ( sum_from_1_to_n(n) - ( sum_from_1_to_n(ans) * m ) );
+        int not_div = ( sum_from_1_to_n(ans) * m );
+        return  div - not_div ;
 
         
         
