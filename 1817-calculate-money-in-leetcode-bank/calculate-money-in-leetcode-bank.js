@@ -11,12 +11,7 @@ var totalMoney = function(n) {
     let sumFrom1To7 = sumFrom1ToN(7);
     let sum = sumFrom1To7 * numberOf7s + (sumFrom1ToN(numberOf7s - 1) * 7);
 
-    let extra = 0;
-    if( remaning ){
-        extra = sumFrom1ToN(remaning) + (numberOf7s * remaning);
-    }
-
-    // console.log(extra);
+    let extra = sumFrom1ToN(remaning) + (numberOf7s * remaning);
 
     sum = sum + extra;
 
