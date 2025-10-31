@@ -2,13 +2,15 @@
  * @param {number[]} digits
  * @return {number[]}
  */
-var plusOne = function(digits) {
-    let curr = 0n;
-    for (let el of digits) {
-        curr *= 10n;
-        curr += BigInt(el);
+ let plusOne = function(digits) {
+    for(let i = digits.length - 1; i > -1 ; i--) {
+        if(digits[i] + 1 < 10){
+            digits[i] ++;
+            return digits;
+        }
+
+        digits[i] = 0;
     }
-    curr ++;
-    
-    return curr.toString().split('').map(c => +c) ;
+    digits.unshift(1);
+    return digits;
 };
