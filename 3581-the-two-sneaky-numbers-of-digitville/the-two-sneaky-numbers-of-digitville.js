@@ -3,21 +3,18 @@
  * @return {number[]}
  */
 var getSneakyNumbers = function(nums) {
-    let freq = [];
-    let res = [];
+    let freq = new Map();
+    let res = new Set();
 
-    for(let i = 0; i < nums.length; i++){
-        if( freq[ nums[i] ] == undefined )
-            freq[ nums[i] ] = 1;
-        else 
-            freq[ nums[i] ] ++;
-        
-        if( freq[ nums[i] ] == 2 )
-            res.push(nums[i]);
-        else if( freq[nums[i]] > 2 )
-            res.splice( res.indexOf(nums[i]), 1 );
+    for(let el of nums){
+        freq.set(el, ( freq.get(el) ?? 0 ) + 1 );
+        if( freq.get(el) == 2 ){
+            res.add(el);
+        } else if( freq.get(el) > 2 ){
+            res.delete(el);
+        }
     }
 
-    return res;
+    return [...res];
 
 };
